@@ -50,12 +50,12 @@ def plot_bar_matplot(df, current_chart):
     percent_symbol = '%'
 
     # Set the labels
-    labels = df.index
+    labels = df.index.astype(str)
 
     # If labels are long, wrap 'em
     labels = [ '\n'.join(wrap(l, current_plot['x_max_len'])) for l in labels ] # Change the number to change the max number of characters per line
 
-    # Soemtimes there are simply too many x-labels. Based on a parameter
+    # Sometimes there are simply too many x-labels. Based on a parameter
     # from the lookup table, this removes some labels to give the others roo
     if current_plot['skip_labels'] != False:
         count = 0
@@ -107,8 +107,7 @@ def plot_bar_matplot(df, current_chart):
     # Use the bespoke labels, and rotate them if necessary
     fig.set_xticklabels(labels, rotation=current_plot['x_rot'], fontsize=current_plot['axis_font_size'])
 
-    # Turn off the spines
-    fig.spines['left'].set_visible(False)
+    # Turn off the spines that are not needed
     fig.spines['right'].set_visible(False)
     fig.spines['top'].set_visible(False)
 
@@ -125,15 +124,18 @@ def plot_bar_matplot(df, current_chart):
 
     # Y axis title
     if current_plot['y_title'] == False:
-        y_axe_class.label.set_visible(False)    #Turn off y axis title
+        y_axe_class.label.set_visible(False)    # Turn off y axis title
+        y_axe_class.set_visible(False)           # Turn off y-axis lines
+        fig.spines['left'].set_visible(False)   # Turn off y-axis spine
     else:
         fig.set_ylabel(current_plot['y_title'])
-
-    # Remove the y-axis stuff
-    y_axe_class.set_visible(False)  
+        y_axe_class.set_visible(True) 
+        fig.spines['left'].set_visible(True)
 
     # Make gap at bottom bigger for labels
     plt.subplots_adjust(bottom=current_plot['bottom_size'])
+    if current_plot['left_size'] != False:
+        plt.subplots_adjust(left=current_plot['left_size'])
     
     # Save the figure
     plt.savefig(STOREFILENAME + current_chart + '.png', format = 'png', dpi = global_specs['dpi'])
@@ -156,6 +158,7 @@ def plot_line_matplot(df, current_chart):
     """
 
     # Set the labels
+
     labels = df.index
 
     # If labels are long, wrap 'em
