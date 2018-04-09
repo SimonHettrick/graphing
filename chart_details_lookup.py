@@ -29,6 +29,7 @@ plot_details is a dictionary of lists. The lists are of the form:
 12. title_font_size: size of title font
 13. axis_font_size: size of axis fonts
 14. value_font_size: size of value label font
+15. uniform_colour: whether to use a uniform colour for bars, default False
 '''
 
 
