@@ -93,14 +93,18 @@ def plot_bar_matplot(df, current_chart):
 
     # Add labels to the bars
     if current_plot['show_values'] == True:
+        count = 0
         for p in fig.patches:
-            fig.annotate(str(int(round(p.get_height(),0))) + percent_symbol,     # Get the height of the bar and round it to a nice looking value
-             (p.get_x()+p.get_width()/2, p.get_height()),  # Locate the mid point of the bar and it's height
-             ha='center',                                  # Start plotting at the centre of the horizotal coord
-             va='center',                                  # ...and the centre of the vertical coord
-             xytext=(4, 12),                               # Change these to move the text positioning to suit
-             textcoords='offset points',                   # Dunno what this does
-             fontsize=current_plot['value_font_size'])           # Set font size
+            # Insert a data value label if we're not supposed to skip this particular one
+            if count % (current_plot['skip_data_labels']+1) == 0:
+                fig.annotate(str(int(round(p.get_height(),0))) + percent_symbol,     # Get the height of the bar and round it to a nice looking value
+                 (p.get_x()+p.get_width()/2, p.get_height()),  # Locate the mid point of the bar and it's height
+                 ha='center',                                  # Start plotting at the centre of the horizotal coord
+                 va='center',                                  # ...and the centre of the vertical coord
+                 xytext=(4, 12),                               # Change these to move the text positioning to suit
+                 textcoords='offset points',                   # Dunno what this does
+                 fontsize=current_plot['value_font_size'])           # Set font size
+             count += 1
 
     if current_plot['chart_title'] != False:
         plt.title(current_plot['chart_title'], fontsize=current_plot['title_font_size'], y=1.08)  # y increases the spacing between the title
@@ -141,7 +145,7 @@ def plot_bar_matplot(df, current_chart):
     plt.subplots_adjust(bottom=current_plot['bottom_size'])
     if current_plot['left_size'] != False:
         plt.subplots_adjust(left=current_plot['left_size'])
-    
+
     # Save the figure
     plt.savefig(STOREFILENAME + current_chart + '.png', format = 'png', dpi = global_specs['dpi'])
 
