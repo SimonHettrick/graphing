@@ -51,6 +51,24 @@ plot_details = {
             'axis_font_size': 12,
             'value_font_size': 20
             },
+    'software_survey_training': {
+            'filename': 'software_survey_training.csv',
+            'plot_type': 'bar',
+            'y1_axis': 'percentage',
+            'y2_axis': False,
+            'x_title': False,
+            'x_rot': 0,
+            'x_max_len': 15,
+            'y_title': False,
+            'chart_title': False,
+            'show_values': True,
+            'skip_labels': False,
+            'bottom_size': 0.1,
+            'left_size' : False,
+            'title_font_size': 24,
+            'axis_font_size': 12,
+            'value_font_size': 20
+            },
     'software_in_papers': {
             'filename': 'software_in_papers.csv',
             'plot_type': 'bar',
