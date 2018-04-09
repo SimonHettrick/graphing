@@ -25,11 +25,12 @@ plot_details is a dictionary of lists. The lists are of the form:
  8. chart_title: title of chart, or use False if no title
  9. show_values: whether to show data labels on bars (True/False)
 10. skip_labels: how many x labels to remove after each one shown (or False to keep all)
-11. bottom_size: fraction of chart dedicated to x-axis tick labels (0-1)
-12. title_font_size: size of title font
-13. axis_font_size: size of axis fonts
-14. value_font_size: size of value label font
-15. uniform_colour: whether to use a uniform colour for bars, default False
+11. skip_data_labels: how many x data value labels to remove after each one shown (or False to keep all)
+12. bottom_size: fraction of chart dedicated to x-axis tick labels (0-1)
+13. title_font_size: size of title font
+14. axis_font_size: size of axis fonts
+15. value_font_size: size of value label font
+16. uniform_colour: whether to use a uniform colour for bars, default False
 '''
 
 
