@@ -68,15 +68,20 @@ def plot_bar_matplot(df, current_chart):
     # set of bars or two sets of bars
     if current_plot['y2_axis'] == False:
         y_values = [current_plot['y1_axis']]
-        colourmap = [plt.cm.Paired(np.arange(len(df)))]
+
+        # If we want the same colour, set to single value, otherwise use a set colormap
+        if current_plot['uniform_colour']:
+            colourmap = '#1677b6'
+        else:
+            colourmap = [plt.cm.Paired(np.arange(len(df)))]
         legend_or_not = False
     else:
         y_values = [current_plot['y1_axis'], current_plot['y2_axis']]
         colourmap = [plt.cm.Spectral(np.arange(len(df))), plt.cm.coolwarm(np.arange(len(df)))]
         legend_or_not = True
-        mpl.rcParams['legend.fontsize'] = current_plot['value_font_size'] 
+        mpl.rcParams['legend.fontsize'] = current_plot['value_font_size']
 
-        
+
     # Now plot
     fig = df.plot(kind='bar',                      # Plot a bar chart
                 y = y_values,
