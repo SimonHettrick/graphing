@@ -113,6 +113,7 @@ def plot_bar_matplot(df, current_chart):
     # Make plot scale to fit plot area
     plt.tight_layout()
 
+    # Set x- and y-axis tick label sizes
     plt.tick_params(labelsize=current_plot['axis_font_size'])
 
     # Use the bespoke labels, and rotate them if necessary
