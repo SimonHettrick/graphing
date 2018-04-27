@@ -53,7 +53,7 @@ def plot_bar_matplot(df, current_chart):
     labels = df.index.astype(str)
 
     # If labels are long, wrap 'em
-    labels = [ '\n'.join(wrap(l, current_plot['x_max_len'])) for l in labels ] # Change the number to change the max number of characters per line
+    labels = [ '\n'.join(wrap(l, current_plot['x_max_len'])) for l in labels ] # Change the number to change the max number of characters                                                                            per line
 
     # Sometimes there are simply too many x-labels. Based on a parameter
     # from the lookup table, this removes some labels to give the others roo
@@ -104,7 +104,7 @@ def plot_bar_matplot(df, current_chart):
                  xytext=(4, 12),                               # Change these to move the text positioning to suit
                  textcoords='offset points',                   # Dunno what this does
                  fontsize=current_plot['value_font_size'])           # Set font size
-             count += 1
+            count += 1
 
     if current_plot['chart_title'] != False:
         plt.title(current_plot['chart_title'], fontsize=current_plot['title_font_size'], y=1.08)  # y increases the spacing between the title
@@ -112,6 +112,8 @@ def plot_bar_matplot(df, current_chart):
 
     # Make plot scale to fit plot area
     plt.tight_layout()
+
+    plt.tick_params(labelsize=current_plot['axis_font_size'])
 
     # Use the bespoke labels, and rotate them if necessary
     fig.set_xticklabels(labels, rotation=current_plot['x_rot'], fontsize=current_plot['axis_font_size'])
@@ -141,7 +143,7 @@ def plot_bar_matplot(df, current_chart):
         y_axe_class.set_visible(True) 
         fig.spines['left'].set_visible(True)
 
-    # Make gap at bottom bigger for labels
+    # Make gap at bottom and left side of plot bigger for text
     plt.subplots_adjust(bottom=current_plot['bottom_size'])
     if current_plot['left_size'] != False:
         plt.subplots_adjust(left=current_plot['left_size'])
