@@ -50,7 +50,7 @@ def plot_bar_matplot(df, current_chart):
     percent_symbol = '%'
 
     # Set the labels
-    labels = df.index.astype(str)
+    labels = df.index.map(str)
 
     # If labels are long, wrap 'em
     labels = [ '\n'.join(wrap(l, current_plot['x_max_len'])) for l in labels ] # Change the number to change the max number of characters                                                                            per line

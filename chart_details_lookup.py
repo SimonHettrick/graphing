@@ -54,6 +54,27 @@ plot_details = {
              'axis_font_size': 16,
              'value_font_size': 16,
              'uniform_colour': False
+             },
+             
+    'eprints_all_papers': {
+             'filename': 'artifacts_by_year.csv',
+             'plot_type': 'bar',
+             'y1_axis': 'percentage',
+             'y2_axis': False,
+             'x_title': False,
+             'x_rot': 0,
+             'x_max_len': 15,
+             'y_title': 'Total RC investment (£ millions)',
+             'chart_title': False,
+             'show_values': True,
+             'skip_labels': False,
+             'skip_data_labels': 2,
+             'bottom_size': 0.1,
+             'left_size' : 0.08,
+             'title_font_size': 12,
+             'axis_font_size': 16,
+             'value_font_size': 16,
+             'uniform_colour': False
              }
          
             
