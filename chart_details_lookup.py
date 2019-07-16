@@ -102,7 +102,7 @@ plot_details = {
         'y2_axis': False,
         'x_title': False,
         'x_rot': 0,
-        'x_max_len': 15,
+        'x_max_len': 13,
         'y_title': False,
         'chart_title': 'What is your job title?',
         'show_values': True,
