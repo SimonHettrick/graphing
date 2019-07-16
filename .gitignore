@@ -1,4 +1,7 @@
-venv/*
-.DS_Store
+__pycache__/
+venv/
+.idea/
 __pycache__
-~*.xlsx
+.DS_Store
+~$*
+archive/
