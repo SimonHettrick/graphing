@@ -2,13 +2,12 @@
 # encoding: utf-8
 
 import pandas as pd
-from pandas import ExcelWriter
 import numpy as np
-import csv
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import os
+import glob
 import matplotlib.font_manager
-import math
 
 from textwrap import wrap
 
@@ -17,6 +16,8 @@ from chart_details_lookup import global_specs
 
 DATASTORE = './data/'
 STOREFILENAME = './output/'
+PLOTDETAILSSTORE = './plot_details/'
+DEFAULTPLOTDETAILS = 'default.csv'
 
 mpl.rc('font',family='Serif')
 
@@ -27,14 +28,70 @@ mpl.rc('font',family='Serif')
 #print(names)
 
 
-def import_csv_to_df(filename):
+def import_csv_to_df(filename, index_col):
     """
     Imports a csv file into a Pandas dataframe
     :params: get an xls file and a sheetname from that file
     :return: a df
     """
-    
-    return pd.read_csv(filename)
+
+    return pd.read_csv(filename, index_col=index_col)
+
+
+def export_to_csv(df, location, filename, index_write):
+    """
+    Exports a df to a csv file
+    :params: a df and a location in which to save it
+    :return: nothing, saves a csv
+    """
+
+    return df.to_csv(location + filename + '.csv', index=index_write)
+
+
+def get_graph_data():
+    """
+    Gets all the csv files in the data dir
+    :return: a list of the dir path, filename and file extension for the csvs in the data dir
+    """
+
+    graph_datafiles = glob.glob(DATASTORE + '/*.csv')
+
+    return graph_datafiles
+
+
+def get_graph_details(graph_datafiles):
+    """
+    Creates a dict of dfs where each df contains the plot details for a single chart. For each chart, it
+    looks to see if a csv exists in which the details are stored. It either reads these if they exist, or creates
+    a new df based on the DEFAULTPLOTDETAILS and then saves that as a new csv.
+    :param graph_datafiles: a list of the dir path, filename and file extension of the data to plot
+    :return plot_details: a dict of dfs containing all the plot details
+    """
+
+    default_details = import_csv_to_df(PLOTDETAILSSTORE + DEFAULTPLOTDETAILS,'field')
+
+    plot_details = {}
+
+    for current_csv in graph_datafiles:
+        name_of_graph = os.path.splitext(os.path.basename(current_csv))[0]
+        filename = os.path.basename(current_csv)
+        try:
+            # If a csv already exists for the data, go and get it
+            graph_df = import_csv_to_df(DATASTORE + filename, 'field')
+        except:
+            # If no csv exists, create it from the default, then add the fieldname
+            # as a new row to identify it
+            graph_df = default_details.copy()
+            d = {'field': ['filename'], 'value': [filename]}
+            filename_df = pd.DataFrame(data=d)
+            filename_df.set_index('field', inplace=True)
+            graph_df = graph_df.append(filename_df)
+            # Save plot details df as a csv
+            export_to_csv(graph_df, PLOTDETAILSSTORE, name_of_graph, True)
+        # Save into a dict of dfs
+        plot_details[name_of_graph] = graph_df
+
+    return plot_details
 
 
 def plot_bar_matplot(df, current_chart):
@@ -245,19 +302,32 @@ def main():
     """
     Main function to run program
     """
-    
-    # Go through all charts in the lookup table
+
+    # Go through a dir and create a list of paths to the csv files that exist
+    graph_datafiles = get_graph_data()
+
+    # Either read in or create parameters to use for creating a chart for
+    # each csv
+    plot_details = get_graph_details(graph_datafiles)
+
     for current_chart in plot_details:
-        # Read survey data for current chart from csv
-        df = import_csv_to_df(DATASTORE + plot_details[current_chart]['filename'])
-        # Set the first column as the index
-        df.set_index('answers', inplace=True)
-        print('Currently working on: ' + current_chart)
-        # Plot
-        if plot_details[current_chart]['plot_type'] == 'line':
-            plot_line_matplot(df, current_chart)
-        else:
-            plot_bar_matplot(df, current_chart)
+        print('Currently working on... ' + current_chart)
+        temp_df = plot_details[current_chart]
+        current_details = temp_df.to_dict('dict')
+        # Annoyingly, the 'to_dict" function stores the dict under a new dict with
+        # only one key drawn from the 'value' field. No idea why. Anyway, this
+        # removes that annoying and pointless layer of abstraction
+        current_details = current_details['value']
+        print(current_details)
+
+
+    # Go through the list of csv files that exist, get the data and create a list of
+    # the parameters used to create the graphs
+    #for current_graph_data in graph_datafiles:
+    #    df = import_csv_to_df(current_graph_data, 'answers')
+    #    shortname = os.path.splitext(os.path.basename(current_graph_data))[0]
+    #    print('Currently working on: ' + shortname)
+    #    graph_details = get_graph_details(current_graph_data)
 
 
 if __name__ == '__main__':
