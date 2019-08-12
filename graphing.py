@@ -19,7 +19,7 @@ STOREFILENAME = './output/'
 PLOTDETAILSSTORE = './plot_details/'
 DEFAULTPLOTDETAILS = 'default.csv'
 
-mpl.rc('font',family='Serif')
+mpl.rc('font', family='Serif')
 
 # If you want to know what fonts are available, uncomment the following four lines
 #flist = matplotlib.font_manager.get_fontconfig_fonts()
@@ -64,6 +64,7 @@ def get_graph_details(graph_datafiles):
     Creates a dict of dfs where each df contains the plot details for a single chart. For each chart, it
     looks to see if a csv exists in which the details are stored. It either reads these if they exist, or creates
     a new df based on the DEFAULTPLOTDETAILS and then saves that as a new csv.
+    Note: this is where the chart filename and title are added to the default details.
     :param graph_datafiles: a list of the dir path, filename and file extension of the data to plot
     :return plot_details: a dict of dfs containing all the plot details
     """
@@ -77,12 +78,13 @@ def get_graph_details(graph_datafiles):
         filename = os.path.basename(current_csv)
         try:
             # If a csv already exists for the data, go and get it
-            graph_df = import_csv_to_df(DATASTORE + filename, 'field')
+            graph_df = import_csv_to_df(PLOTDETAILSSTORE + filename, 'field')
         except:
-            # If no csv exists, create it from the default, then add the fieldname
-            # as a new row to identify it
+            # If no csv exists, create it from the default, then add the filename
+            # as a new row to identify it, then add the name_of_graph as title, again
+            # as a new row, because it's a good default title
             graph_df = default_details.copy()
-            d = {'field': ['filename'], 'value': [filename]}
+            d = {'field': ['filename', 'chart_title'], 'value': [filename, name_of_graph]}
             filename_df = pd.DataFrame(data=d)
             filename_df.set_index('field', inplace=True)
             graph_df = graph_df.append(filename_df)
@@ -94,7 +96,46 @@ def get_graph_details(graph_datafiles):
     return plot_details
 
 
-def plot_bar_matplot(df, current_chart):
+def df_to_dict(details_df):
+    """
+    Takes a df and converts it into a dict
+    :param details_df: a df of the plot details of a specific plot
+    :return current_details: a dict identical in content to the df
+    """
+
+    current_details = details_df.to_dict('dict')
+    # Annoyingly, the 'to_dict" function stores the dict under a new dict with
+    # only one key drawn from the 'value' field. No idea why. Anyway, this
+    # removes that annoying and pointless layer of abstraction
+    current_details = current_details['value']
+
+    # The process above changes everything into a string, which is really
+    # annoying, but I can't find any way round it. Hence, here
+    # I change the numeric and bool values back to their original form
+    # I can't help but feel that there must be an easier way than this
+    for key in current_details:
+        value = current_details[key]
+        # Change bool values back again
+        if type(value) == str:
+            if value.lower() == 'true':
+                current_details[key] = True
+            elif value.lower() == 'false':
+                current_details[key] = False
+        # Some try and excepts used to convert floats and ints.
+        # Anything that's left after this has to be a str.
+        try:
+            current_details[key] = float(value)
+        except ValueError:
+            pass
+        try:
+            current_details[key] = int(value)
+        except ValueError:
+            pass
+
+    return current_details
+
+
+def plot_bar_matplot(df, current_plot, current_chart_name):
     """
     Create a basic plot for each question.
     :params: a dict of dataframe, the imported plot details
@@ -102,7 +143,7 @@ def plot_bar_matplot(df, current_chart):
     """
 
     # To cut down on verbosity, rename the look_up dictionary
-    current_plot = plot_details[current_chart]
+    #current_plot = plot_details[current_chart]
 
     percent_symbol = '%'
 
@@ -110,10 +151,11 @@ def plot_bar_matplot(df, current_chart):
     labels = df.index.map(str)
 
     # If labels are long, wrap 'em
-    labels = [ '\n'.join(wrap(l, current_plot['x_max_len'])) for l in labels ] # Change the number to change the max number of characters                                                                            per line
+    labels = [ '\n'.join(wrap(l, current_plot['x_max_len'])) for l in labels ]
 
     # Sometimes there are simply too many x-labels. Based on a parameter
-    # from the lookup table, this removes some labels to give the others roo
+    # from the lookup table, this removes some labels to give the others room
+
     if current_plot['skip_labels'] != False:
         count = 0
         for x in range(0,len(labels)):
@@ -137,6 +179,7 @@ def plot_bar_matplot(df, current_chart):
         colourmap = [plt.cm.Spectral(np.arange(len(df))), plt.cm.coolwarm(np.arange(len(df)))]
         legend_or_not = True
         mpl.rcParams['legend.fontsize'] = current_plot['value_font_size']
+
 
 
     # Now plot
@@ -207,7 +250,7 @@ def plot_bar_matplot(df, current_chart):
         plt.subplots_adjust(left=current_plot['left_size'])
 
     # Save the figure
-    plt.savefig(STOREFILENAME + current_chart + '.png', format = 'png', dpi = global_specs['dpi'])
+    plt.savefig(STOREFILENAME + current_chart_name + '.png', format = 'png', dpi = global_specs['dpi'])
 
     # Show the figure
 #    plt.show()
@@ -310,15 +353,16 @@ def main():
     # each csv
     plot_details = get_graph_details(graph_datafiles)
 
-    for current_chart in plot_details:
-        print('Currently working on... ' + current_chart)
-        temp_df = plot_details[current_chart]
-        current_details = temp_df.to_dict('dict')
-        # Annoyingly, the 'to_dict" function stores the dict under a new dict with
-        # only one key drawn from the 'value' field. No idea why. Anyway, this
-        # removes that annoying and pointless layer of abstraction
-        current_details = current_details['value']
-        print(current_details)
+    # Go through all the plot details, get the associated data for that plot and
+    # send it off for plotting
+    for current_chart_name in plot_details:
+        print('Currently working on... ' + current_chart_name)
+        details_df = plot_details[current_chart_name]
+        current_details = df_to_dict(details_df)
+        data_filename = DATASTORE + current_details['filename']
+        data_df = import_csv_to_df(data_filename, 'answers')
+        plot_bar_matplot(data_df, current_details, current_chart_name)
+
 
 
     # Go through the list of csv files that exist, get the data and create a list of
