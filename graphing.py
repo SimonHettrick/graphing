@@ -346,6 +346,8 @@ def main():
     Main function to run program
     """
 
+    col_for_plot_data = 'answers'
+
     # Go through a dir and create a list of paths to the csv files that exist
     graph_datafiles = get_graph_data()
 
@@ -360,19 +362,8 @@ def main():
         details_df = plot_details[current_chart_name]
         current_details = df_to_dict(details_df)
         data_filename = DATASTORE + current_details['filename']
-        data_df = import_csv_to_df(data_filename, 'answers')
+        data_df = import_csv_to_df(data_filename, col_for_plot_data)
         plot_bar_matplot(data_df, current_details, current_chart_name)
-
-
-
-    # Go through the list of csv files that exist, get the data and create a list of
-    # the parameters used to create the graphs
-    #for current_graph_data in graph_datafiles:
-    #    df = import_csv_to_df(current_graph_data, 'answers')
-    #    shortname = os.path.splitext(os.path.basename(current_graph_data))[0]
-    #    print('Currently working on: ' + shortname)
-    #    graph_details = get_graph_details(current_graph_data)
-
 
 if __name__ == '__main__':
     main()
