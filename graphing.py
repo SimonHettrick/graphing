@@ -89,8 +89,22 @@ def get_graph_details(graph_datafiles):
             graph_df = graph_df.append(filename_df)
             # Save plot details df as a csv
             export_to_csv(graph_df, PLOTDETAILSSTORE, name_of_graph, True)
-        # Save into a dict of dfs
-        plot_details[name_of_graph] = graph_df
+        # This following section checks to see whether anything has changed since the last run.
+        # I found that you can spend an awful lot of time fiddling with one chart to get it right
+        # and during that time you keep mindlessly recreating the same old charts, which significantly
+        # increases the time it takes to get your charts right. This way, anything that's untouched since
+        # last time (i.e. the plot details haven't changed) will not be recreated.
+        try:
+            old_graph_df = import_csv_to_df(PLOTDETAILSSTORE + 'previous_run/' + filename, 'field')
+            same_as_last_time = old_graph_df.equals(graph_df)
+        except:
+            same_as_last_time = False
+        if same_as_last_time == False:
+            # Save into a dict of dfs
+            plot_details[name_of_graph] = graph_df
+            # Save a copy of the graph_df to the previous_run folder, this will be used the
+            # next time the script is run to check for changes to the plot_details
+            export_to_csv(graph_df, PLOTDETAILSSTORE + 'previous_run/', name_of_graph, True)
 
     return plot_details
 
@@ -144,7 +158,10 @@ def plot_bar_matplot(df, current_plot, current_chart_name):
     # To cut down on verbosity, rename the look_up dictionary
     #current_plot = plot_details[current_chart]
 
-    percent_symbol = '%'
+    if current_plot['symbol_after_value'] == False:
+        symbol_to_display = ''
+    else:
+        symbol_to_display = current_plot['symbol_after_value']
 
     # Set the labels
     labels = df.index.map(str)
@@ -196,7 +213,7 @@ def plot_bar_matplot(df, current_plot, current_chart_name):
         for p in fig.patches:
             # Insert a data value label if we're not supposed to skip this particular one
             if count % (current_plot['skip_data_labels']+1) == 0:
-                fig.annotate(str(int(round(p.get_height(),0))) + percent_symbol,     # Get the height of the bar and round it to a nice looking value
+                fig.annotate(str(int(round(p.get_height(),0))) + symbol_to_display,     # Get the height of the bar and round it to a nice looking value
                  (p.get_x()+p.get_width()/2, p.get_height()),  # Locate the mid point of the bar and it's height
                  ha='center',                                  # Start plotting at the centre of the horizotal coord
                  va='center',                                  # ...and the centre of the vertical coord
