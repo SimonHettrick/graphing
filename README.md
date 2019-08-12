@@ -1,4 +1,4 @@
-# graphing
+# My fancy-pants graphing program
 
 ## Summary
 
@@ -8,9 +8,10 @@ I'm tired of never getting the kind of charts I want out of Matplotlib. It\'s so
 
 There are three directories: data, output and plot details.
 
-* data: holds a set of csv files that contain the data you want plotted.
-* output: holds a set of pngs
-* plot_details: holds a single csv ```default.csv``` at first, and then after the first run of ```graphing.py``` it will hold a set of csvs that provide plotting details for each of the csv files
+* ```data```: holds a set of csv files that contain the data you want plotted.
+* ```output```: holds a set of pngs
+* ```plot_details```: holds a single csv ```default.csv``` at first, and then after the first run of ```graphing.py``` it will hold a set of csvs that provide plotting details for each of the csv files
+* ```plot_details/previous_run```: this contains the version of the plot details csv files used in the last run. In the current run, ```graphing.py``` will check the current version of the plot details against the previous version and (to save everyone's time) will only recreate the chart if something has changed. If you want to reproduce all the charts, delete all the csvs in the ```plot_details/previous_run``` directory and re-run ```graphing.py```.
 * ```graphing.py``` is the script that produces the charts based on the details in the lookup table.
 * ```requirements.txt``` holds the details of the libraries used by the scripts
 
@@ -41,21 +42,22 @@ Prepare for running Python:
 * So... if you have a favoured idea on the size of the title font or anything like that, change it in the ```default.csv``` file before running ```graphing.py``` for the first time. (If you have already completed that first run, just delete all the csvs from the ```data``` directory - except ```default.csv``` - make the change you wanted in the ```default.csv``` file and run ```graphing.py``` again.)
 * You'll notice two fiels (filename and chart_title) that exist in the generated csvs but not in the ```default.csv```. These parameters are created automatically by ```graphing.py```.
 * The plotting parameters in each csv are:
-   * filename: foo.csv,          # the name of the csv in the data directory, generated automatically
-   * plot_type: bar,             # the type of chart, currently bar charts are the only choice
-   * y1_axis': 'percentage',     # Name of the column you want plotted
-   * y2_axis: False,             # Name of a second column you want plotted (or False, if there isn't one)
-   * x_title: False,             # A title for the x-axis, or False if you don't want a title
-   * x_rot: 0,                   # Rotation of x-axis tick labels (0 is horizontal)
-   * x_max_len: 15,              # Max length of x-axis tick labels before they start a new line
-   * y_title: Percentage,      # Title for y axis, or use False if you don't want a title
-   * chart_title: This is a title,     # Chart title, or use False if you don't want a title
-   * show_values: True,          # If True, show value on bars, if False, nothing
-   * skip_labels: False,         # If False, print all x-axis labels. If set to a number, print an x-tick label, then skip that number of    * labels before printing the next x-axis label. (Allows you to deal with having too many x-tick labels to show neatly).
-   * bottom_size: 0.15,          # Fraction of chart dedicated to x-axis tick labels (must be in range 0 - 1)
-   * title_font_size: 24,        # Size of title font
-   * axis_font_size: 14,         # Size of axis fonts
-   * value_font_size: 20         # Size of value label font
+   * filename: foo.csv -  the name of the csv in the data directory, generated automatically
+   * plot_type: bar - the type of chart, currently bar charts are the only choice
+   * y1_axis': 'percentage' - Name of the column you want plotted
+   * y2_axis: False - Name of a second column you want plotted (or False, if there isn't one)
+   * x_title: False - A title for the x-axis, or False if you don't want a title
+   * x_rot: 0 - Rotation of x-axis tick labels (0 is horizontal)
+   * x_max_len: 15 - Max length of x-axis tick labels before they start a new line
+   * y_title: Percentage - Title for y axis, or use False if you don't want a title
+   * chart_title: This is a title - Chart title, or use False if you don't want a title
+   * show_values: True - If True, show value on bars, if False, nothing
+   * symbol_after_value: % - Any symbol you add here will display after the relevant value if you choose ```show_values=True```. Most common use is to add a % symbol. Put ```False``` if you don't want any symbol to appear         
+   * skip_labels: False - If False, print all x-axis labels. If set to a number, print an x-tick label, then skip that number of    * labels before printing the next x-axis label. (Allows you to deal with having too many x-tick labels to show neatly).
+   * bottom_size: 0.15 - Fraction of chart dedicated to x-axis tick labels (must be in range 0 - 1)
+   * title_font_size: 24 - Size of title font
+   * axis_font_size: 14 - Size of axis fonts
+   * value_font_size: 20 - Size of value label font
              
 ### Create charts
 
