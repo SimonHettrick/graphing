@@ -11,7 +11,6 @@ import matplotlib.font_manager
 
 from textwrap import wrap
 
-from chart_details_lookup import plot_details
 from chart_details_lookup import global_specs
 
 DATASTORE = './data/'
