@@ -60,4 +60,4 @@ Prepare for running Python:
  * Note: you will now have to close each chart after it's opened by the script
 1. Run the script:
  * ```python graphing.py```
-1. Your charts will appear in the output folder as png files.
+1. Your charts will appear in the output folder as png files..
