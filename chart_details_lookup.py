@@ -6,8 +6,8 @@ global_specs sets up some global variables for the plots
 '''
 
 global_specs = {
-    'plot_width': 10,
-    'plot_height': 7.2,
-    'dpi': 300,
+    'plot_width': 5,
+    'plot_height': 3,
+    'dpi': 150,
     'font_name': 'Serif'
     }
