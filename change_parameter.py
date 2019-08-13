@@ -71,7 +71,6 @@ def main():
     title_font_size: 24 - Size of title font
     axis_font_size: 14 - Size of axis fonts
     value_font_size: 20 - Size of value label font
-
     """
 
     parameter_to_change = 'axis_font_size'
