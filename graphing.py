@@ -7,6 +7,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import os
 import glob
+import sys
 import matplotlib.font_manager
 
 from textwrap import wrap
@@ -15,7 +16,7 @@ from chart_details_lookup import global_specs
 
 DATASTORE = './data/'
 STOREFILENAME = './output/'
-PLOTDETAILSSTORE = './'
+PLOTDETAILSSTORE = './plot_details/'
 DEFAULTPLOTDETAILS = './default.csv'
 
 mpl.rc('font', family='arial')
@@ -58,7 +59,7 @@ def get_graph_data():
     return graph_datafiles
 
 
-def get_graph_details(graph_datafiles):
+def get_graph_details(graph_datafiles, cmd_args):
     """
     Creates a dict of dfs where each df contains the plot details for a single chart. For each chart, it
     looks to see if a csv exists in which the details are stored. It either reads these if they exist, or creates
@@ -99,6 +100,11 @@ def get_graph_details(graph_datafiles):
             same_as_last_time = old_graph_df.equals(graph_df)
         except:
             same_as_last_time = False
+
+        # If the ignore command line argument was used, just re-plot everything
+        if cmd_args == 'ignore':
+            same_as_last_time = False
+
         if same_as_last_time == False:
             # Save into a dict of dfs
             plot_details[name_of_graph] = graph_df
@@ -362,6 +368,10 @@ def main():
     Main function to run program
     """
 
+    # Get any command line argument
+    cmd_args = sys.argv[1]
+
+    # See issue #2 for a discussion of this next line
     col_for_plot_data = 'answers'
 
     # Go through a dir and create a list of paths to the csv files that exist
@@ -369,7 +379,7 @@ def main():
 
     # Either read in or create parameters to use for creating a chart for
     # each csv
-    plot_details = get_graph_details(graph_datafiles)
+    plot_details = get_graph_details(graph_datafiles, cmd_args)
 
     # Go through all the plot details, get the associated data for that plot and
     # send it off for plotting
