@@ -15,10 +15,10 @@ from chart_details_lookup import global_specs
 
 DATASTORE = './data/'
 STOREFILENAME = './output/'
-PLOTDETAILSSTORE = './plot_details/'
-DEFAULTPLOTDETAILS = 'default.csv'
+PLOTDETAILSSTORE = './'
+DEFAULTPLOTDETAILS = './default.csv'
 
-mpl.rc('font', family='Serif')
+mpl.rc('font', family='arial')
 
 # If you want to know what fonts are available, uncomment the following four lines
 #flist = matplotlib.font_manager.get_fontconfig_fonts()
@@ -68,7 +68,7 @@ def get_graph_details(graph_datafiles):
     :return plot_details: a dict of dfs containing all the plot details
     """
 
-    default_details = import_csv_to_df(PLOTDETAILSSTORE + DEFAULTPLOTDETAILS,'field')
+    default_details = import_csv_to_df(DEFAULTPLOTDETAILS,'field')
 
     plot_details = {}
 
