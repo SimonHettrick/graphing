@@ -24,8 +24,11 @@ def get_other_filenames(filenames):
     datafilenames = []
 
     for list_item in filenames:
-        datafilenames.append(DATASTORE + os.path.basename(list_item))
-        datafilenames.append(CHARTSTORE + os.path.basename(list_item))
+        basename = os.path.splitext(os.path.basename(list_item))[0]
+        # Get the data csvs
+        datafilenames.append(DATASTORE + basename + '.csv')
+        # Get the chart pngs
+        datafilenames.append(CHARTSTORE + basename + '.png')
 
     return datafilenames
 
@@ -78,9 +81,10 @@ def main():
     """
     # Whereas I might have left old data files in the data dir, the plot details dir
     # will always have the most up to date version of what I
-    #was doing (because they dictate
-    # what gets plotted so you get tons of extraneous plots if you're not good with your
-    # folder discipline in thsis dir. Hence start with the files in the plot dir.
+    # was doing (because they dictate what gets plotted so you get tons of extraneous plots
+    # if you're not good with your folder discipline in this dir.
+    # Hence start with the files in the plot dir and use that to identify the data csvs and plot pngs
+
     filenames = get_file_names(PLOTDETAILSSTORE)
 
     # Get the data and charts that corresponds to the plot details
@@ -91,9 +95,9 @@ def main():
     date = get_date()
 
     # User input for zip filename
-    #zipname = get_zipname(date)
+    zipname = get_zipname(date)
 
-    #zipfiles(filenames, datafilenames, zipname)
+    zipfiles(filenames, datafilenames, zipname)
 
 if __name__ == '__main__':
     main()
