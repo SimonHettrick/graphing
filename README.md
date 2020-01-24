@@ -8,11 +8,14 @@ I'm tired of never getting the kind of charts I want out of Matplotlib. It\'s so
 
 There are three directories: data, output and plot details.
 
+* ```archived_plot_data```: a dir in which plot-detail-and-data archives are stored (see ```archive_plot_details.py```).
+* ```archive_plot_details.py```: run this script after you've finished tailoring your plots if you want to zip up the plot-detail-and-data files into a handy, dated archive file. 
+* ```chart_details_lookup.py```: holds global parameters that affect all plots: image size, resolution, etc.
 * ```data```: holds a set of csv files that contain the data you want plotted.
-* ```output```: holds a set of pngs
-* ```plot_details```: holds a single csv ```default.csv``` at first, and then after the first run of ```graphing.py``` it will hold a set of csvs that provide plotting details for each of the csv files
-* ```plot_details/previous_run```: this contains the version of the plot details csv files used in the last run. In the current run, ```graphing.py``` will check the current version of the plot details against the previous version and (to save everyone's time) will only recreate the chart if something has changed. If you want to reproduce all the charts, delete all the csvs in the ```plot_details/previous_run``` directory and re-run ```graphing.py```.
-* ```graphing.py``` is the script that produces the charts based on the details in the lookup table.
+* ```graphing.py``` is the script that produces the charts based on the details in the lookup table. If you want to reproduce all the charts regardless of whether they were previously created, use the command ```graphing.py ignore```.
+* ```output```: holds the charts as a set of pngs
+* ```plot_details```: uses ```default.csv``` to create a set of csvs - one for each file in the ```data``` dir - to tailor the plots. The parameters can be changed manually after the files are created to tailor the charts you want. 
+* ```plot_details/previous_run```: this contains the version of the plot details csv files used in the last run. In the current run, ```graphing.py``` will check the current version of the plot details against the previous version and (to save everyone's time) will only recreate the chart if something has changed (unless you use the ```ignore``` argument (see above).
 * ```requirements.txt``` holds the details of the libraries used by the scripts
 
 ## Set up
@@ -31,16 +34,14 @@ Prepare for running Python:
 1. (If you're having lots of problems with pip not finding the right libraries, try [installing pip from source](https://pip.pypa.io/en/stable/installing/).)
 
 ### Set up the lookup file
-
- ```chart_details_lookup.py``` holds the general details about the plots you want.
  
-1. ```global_specs``` specifies the size of the charts, the resolution of the saved charts, and the font used in the charts. Change these to suit your needs.
+1. Set parameters in ```global_specs``` within  ```chart_details_lookup.py``` to specify the size of the charts, the resolution of the saved charts, and the font used in the charts.
 
 ### Creating the details for each plot
 
-* When you first run ```graphing.py``` it will take create plot details files for each csv it finds in the ```data``` directory. These will be based on the values in the ```default.csv``` file found in the ```plot_details``` directory.
-* So... if you have a favoured idea on the size of the title font or anything like that, change it in the ```default.csv``` file before running ```graphing.py``` for the first time. (If you have already completed that first run, just delete all the csvs from the ```data``` directory - except ```default.csv``` - make the change you wanted in the ```default.csv``` file and run ```graphing.py``` again.)
-* You'll notice two fiels (filename and chart_title) that exist in the generated csvs but not in the ```default.csv```. These parameters are created automatically by ```graphing.py```.
+* When you first run ```graphing.py``` it will take create plot details files for each csv it finds in the ```data``` directory. These will be based on the values in the ```default.csv``` file.
+* So... if you have a favoured idea on the size of the title font or anything like that, change it in the ```default.csv``` file before running ```graphing.py``` for the first time. (If you have already completed that first run, just delete all the csvs from the ```data``` directory, make the change you wanted in the ```default.csv``` file and run ```graphing.py``` again.)
+* You'll notice two fields (filename and chart_title) that exist in the generated csvs but not in the ```default.csv```. These parameters are created automatically by ```graphing.py```.
 * The plotting parameters in each csv are:
    * filename: foo.csv -  the name of the csv in the data directory, generated automatically
    * plot_type: bar - the type of chart, currently bar charts are the only choice
@@ -72,11 +73,13 @@ Prepare for running Python:
 |Swallow speed    | 2      | 1          |
 |Question         | 1      | 1          |
 
-1. At the start of the ```main``` funtion in ```graphing.py``` you will find a variable ```col_for_plot_data```. This should be set to the name of the column in which you list your questions (in the above example: ```col_for_plot_data = 'questions' ```.
+1. At the start of the ```main``` function in ```graphing.py``` you will find a variable ```col_for_plot_data```. This should be set to the name of the column in which you list your questions (in the above example: ```col_for_plot_data = 'questions' ```.
 1. Run ```graphing.py```
 1. You will now have a populated ```plot_details``` directory and a series of charts in the ```output``` directory
 1. Look through the charts, decide what changes you would like to make to the plotting parameters (listed above), make those changes and run ```graphing.py``` again.
 1. Repeat the last step until you are satisfied with the results.
+1. When you are finished tailoring your charts, you can run ```archive_plot_details.py``` to save the data csvs and your plot details for posterity. The resulting zip file can be found in ```archived_plot_data```. 
+
 
 ### Notes
 
