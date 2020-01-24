@@ -10,6 +10,7 @@ from datetime import date
 DATASTORE = './data/'
 PLOTDETAILSSTORE = './plot_details/'
 ARCHIVESTORE = './archived_plot_data/'
+CHARTSTORE = './output/'
 
 def get_file_names(directory):
     """
@@ -18,14 +19,17 @@ def get_file_names(directory):
 
     return glob.glob(directory + '/*.csv')
 
-def get_data_filenames(filenames):
+def get_other_filenames(filenames):
 
     datafilenames = []
 
     for list_item in filenames:
         datafilenames.append(DATASTORE + os.path.basename(list_item))
+        datafilenames.append(CHARTSTORE + os.path.basename(list_item))
 
     return datafilenames
+
+
 
 def get_date():
 
@@ -72,22 +76,24 @@ def main():
     """
     Main function to run program
     """
-
     # Whereas I might have left old data files in the data dir, the plot details dir
-    # will always have the most up to date version of what I was doing (because they dictate
+    # will always have the most up to date version of what I
+    #was doing (because they dictate
     # what gets plotted so you get tons of extraneous plots if you're not good with your
     # folder discipline in thsis dir. Hence start with the files in the plot dir.
     filenames = get_file_names(PLOTDETAILSSTORE)
 
-    # Get the data that corresponds to the plot details
-    datafilenames = get_data_filenames(filenames)
+    # Get the data and charts that corresponds to the plot details
+    datafilenames = get_other_filenames(filenames)
+
+    print(datafilenames)
 
     date = get_date()
 
     # User input for zip filename
-    zipname = get_zipname(date)
+    #zipname = get_zipname(date)
 
-    zipfiles(filenames, datafilenames, zipname)
+    #zipfiles(filenames, datafilenames, zipname)
 
 if __name__ == '__main__':
     main()
