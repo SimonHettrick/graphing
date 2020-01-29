@@ -19,7 +19,7 @@ STOREFILENAME = './output/'
 PLOTDETAILSSTORE = './plot_details/'
 DEFAULTPLOTDETAILS = './default.csv'
 
-mpl.rc('font', family='arial')
+mpl.rc('font', family=global_specs['font_name'])
 
 # If you want to know what fonts are available, uncomment the following four lines
 #flist = matplotlib.font_manager.get_fontconfig_fonts()
@@ -369,7 +369,10 @@ def main():
     """
 
     # Get any command line argument
-    cmd_args = sys.argv[1]
+    try:
+        cmd_args = sys.argv[1]
+    except:
+        cmd_args = 'no_cmd_args'
 
     # See issue #2 for a discussion of this next line
     col_for_plot_data = 'answers'
