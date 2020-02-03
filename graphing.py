@@ -28,7 +28,7 @@ mpl.rc('font', family=global_specs['font_name'])
 #print(names)
 
 
-def import_csv_to_df(filename, index_col):
+def import_csv_to_df_test(filename, index_col):
     """
     Imports a csv file into a Pandas dataframe
     :params: get an xls file and a sheetname from that file
@@ -36,6 +36,21 @@ def import_csv_to_df(filename, index_col):
     """
 
     return pd.read_csv(filename, index_col=index_col)
+
+def import_csv_to_df(filename):
+    """
+    Imports a csv file into a Pandas dataframe
+    :params: get an xls file and a sheetname from that file
+    :return: a df
+    """
+
+    df = pd.read_csv(filename)
+    answer_col = df.columns[0]
+    df.set_index(answer_col, inplace=True)
+
+    return df
+
+
 
 
 def export_to_csv(df, location, filename, index_write):
@@ -69,7 +84,7 @@ def get_graph_details(graph_datafiles, cmd_args):
     :return plot_details: a dict of dfs containing all the plot details
     """
 
-    default_details = import_csv_to_df(DEFAULTPLOTDETAILS,'field')
+    default_details = import_csv_to_df(DEFAULTPLOTDETAILS)
 
     plot_details = {}
 
@@ -78,7 +93,7 @@ def get_graph_details(graph_datafiles, cmd_args):
         filename = os.path.basename(current_csv)
         try:
             # If a csv already exists for the data, go and get it
-            graph_df = import_csv_to_df(PLOTDETAILSSTORE + filename, 'field')
+            graph_df = import_csv_to_df(PLOTDETAILSSTORE + filename)
         except:
             # If no csv exists, create it from the default, then add the filename
             # as a new row to identify it, then add the name_of_graph as title, again
@@ -96,7 +111,7 @@ def get_graph_details(graph_datafiles, cmd_args):
         # increases the time it takes to get your charts right. This way, anything that's untouched since
         # last time (i.e. the plot details haven't changed) will not be recreated.
         try:
-            old_graph_df = import_csv_to_df(PLOTDETAILSSTORE + 'previous_run/' + filename, 'field')
+            old_graph_df = import_csv_to_df(PLOTDETAILSSTORE + 'previous_run/' + filename)
             same_as_last_time = old_graph_df.equals(graph_df)
         except:
             same_as_last_time = False
@@ -161,22 +176,24 @@ def plot_bar_matplot(df, current_plot, current_chart_name):
     :return: A list of saved charts
     """
 
-    # To cut down on verbosity, rename the look_up dictionary
-    #current_plot = plot_details[current_chart]
-
     if current_plot['symbol_after_value'] == False:
         symbol_to_display = ''
     else:
         symbol_to_display = current_plot['symbol_after_value']
 
+    print(df)
+
     # Set the labels
     labels = df.index.map(str)
+
+    print(labels)
 
     # If labels are long, wrap 'em
     labels = [ '\n'.join(wrap(l, current_plot['x_max_len'])) for l in labels ]
 
     # Sometimes there are simply too many x-labels. Based on a parameter
     # from the lookup table, this removes some labels to give the others room
+
 
     if current_plot['skip_labels'] != False:
         count = 0
@@ -391,7 +408,7 @@ def main():
         details_df = plot_details[current_chart_name]
         current_details = df_to_dict(details_df)
         data_filename = DATASTORE + current_details['filename']
-        data_df = import_csv_to_df(data_filename, col_for_plot_data)
+        data_df = import_csv_to_df(data_filename)
         plot_bar_matplot(data_df, current_details, current_chart_name)
 
 if __name__ == '__main__':
